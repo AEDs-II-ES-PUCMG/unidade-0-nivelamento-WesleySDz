@@ -10,7 +10,6 @@ public class ProdutoNaoPerecivel extends Produto {
     }
 
     // Não entendi a lógica de implementação desse override
-    // Qual o sentido????
     @Override
     public double valorDeVenda() {
         return getPrecoCusto() * (1 + getMargemLucro());
@@ -18,7 +17,7 @@ public class ProdutoNaoPerecivel extends Produto {
 
     @Override
     public String gerarDadosTexto() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return "1;" + getDescricao() + ";" + getPrecoCusto() + ";" + getMargemLucro();
     }
 
 }

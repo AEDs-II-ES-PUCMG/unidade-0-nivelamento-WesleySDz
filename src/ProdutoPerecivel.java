@@ -40,6 +40,10 @@ public class ProdutoPerecivel extends Produto{
 
     @Override
     public String gerarDadosTexto() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String dataValidadeFormatada = dataDeValidade.format(formatter);
+        String precoFormatado = String.format("%.2f", getPrecoCusto()).replace(',', '.');
+        String margemFormatada = String.format("%.2f", getMargemLucro()).replace(',', '.');
+        return "2;" + getDescricao() + ";" + precoFormatado + ";" + margemFormatada + ";" + dataValidadeFormatada;
     }
 }
