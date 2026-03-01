@@ -2,6 +2,8 @@
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Comercio {
@@ -92,7 +94,7 @@ public class Comercio {
                 return vetorVazio;
             }
 
-            try (Scanner leitor = new Scanner(arquivoDados, Charset.forName("UTF-8"))) { 
+            try (Scanner leitor = new Scanner(arquivoDados, Charset.forName("UTF-8"))) {
 
                 // Verifica se o arquivo está vazio
                 if (!leitor.hasNextLine()) {
@@ -116,7 +118,7 @@ public class Comercio {
                     }
                 }
 
-                return vetorProdutos; 
+                return vetorProdutos;
             }
 
         } catch (IOException e) {
@@ -151,10 +153,10 @@ public class Comercio {
      * produto, imprime mensagem padrão
      */
     static void localizarProdutos() {
-        System.out.print("Digite a descrição do produto a ser localizado: ");
+        System.out.print("Digite a descrição/nome do produto a ser localizado: ");
         String descProduto = teclado.nextLine().trim();
         boolean encontrado = false;
-        
+
         for (Produto produto : produtosCadastrados) {
             if (produto != null && produto.getDescricao().equalsIgnoreCase(descProduto)) {
                 System.out.println("Produto encontrado:");
@@ -179,7 +181,37 @@ public class Comercio {
      * objetos.
      */
     static void cadastrarProduto() {
-        //TO DO
+
+        System.out.print("Digite a descrição do produto: ");
+        String descricao = teclado.nextLine().trim();
+
+        System.out.print("Digite o preço de custo do produto: ");
+        double precoCusto = Double.parseDouble(teclado.nextLine().trim());
+
+        System.out.print("Digite a margem de lucro do produto (em decimal, ex: 0.5 para 50%): ");
+        double margemLucro = Double.parseDouble(teclado.nextLine().trim());
+
+        System.out.print("O produto é perecível? (s/n): ");
+        String respostaPerecivel = teclado.nextLine().trim().toLowerCase();
+
+        Produto novoProduto;
+        if (respostaPerecivel.equals("s")) {
+            System.out.print("Digite a data de validade do produto (dd/MM/yyyy): ");
+            String dataValidadeStr = teclado.nextLine().trim();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate dataValidade = LocalDate.parse(dataValidadeStr, formatter);
+            novoProduto = new ProdutoPerecivel(descricao, precoCusto, margemLucro, dataValidade);
+        } else {
+            novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro);
+        }
+
+        if (quantosProdutos < produtosCadastrados.length) {
+            produtosCadastrados[quantosProdutos] = novoProduto;
+            quantosProdutos++;
+            System.out.println("Produto cadastrado com sucesso!");
+        } else {
+            System.out.println("Limite de produtos cadastrados atingido. Não é possível cadastrar mais produtos.");
+        }
     }
 
     /**
@@ -189,7 +221,30 @@ public class Comercio {
      * @param nomeArquivo Nome do arquivo a ser gravado.
      */
     public static void salvarProdutos(String nomeArquivo) {
-        //TO DO  
+        // Verifica se há produtos para salvar antes de tentar abrir o arquivo
+        if (produtosCadastrados == null || quantosProdutos == 0) {
+            System.out.println("Não há produtos cadastrados para salvar.");
+            return;
+        }
+
+        cabecalho(); // Exibe o cabeçalho para indicar que o processo de salvamento está começando
+        System.out.println("Salvando produtos no arquivo: " + nomeArquivo);
+        System.out.println("Total de produtos a salvar: " + quantosProdutos);
+
+        try (java.io.PrintWriter escritor = new java.io.PrintWriter(new java.io.File(nomeArquivo), "UTF-8")) {
+            escritor.println(quantosProdutos); // Escreve a quantidade de produtos no início do arquivo
+            for (int i = 0; i < quantosProdutos; i++) {
+                if (produtosCadastrados[i] != null) { // Verifica se o produto não é nulo antes de tentar salvar
+                    escritor.println(produtosCadastrados[i].gerarDadosTexto());
+                }
+            }
+
+            escritor.flush(); // Garante que os dados sejam escritos no arquivo
+            System.out.println("Produtos salvos com sucesso!");
+        } catch (IOException e) {
+            System.err.println("Erro ao salvar produtos: " + e.getMessage());
+        }
+
     }
 
     public static void main(String[] args) throws Exception {
