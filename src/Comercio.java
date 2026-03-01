@@ -151,7 +151,22 @@ public class Comercio {
      * produto, imprime mensagem padrão
      */
     static void localizarProdutos() {
-        //TO DO
+        System.out.print("Digite a descrição do produto a ser localizado: ");
+        String descProduto = teclado.nextLine().trim();
+        boolean encontrado = false;
+        
+        for (Produto produto : produtosCadastrados) {
+            if (produto != null && produto.getDescricao().equalsIgnoreCase(descProduto)) {
+                System.out.println("Produto encontrado:");
+                System.out.println(produto.toString());
+                encontrado = true;
+                break; // Para de procurar após encontrar o primeiro produto correspondente
+            }
+        }
+
+        if (!encontrado) {
+            System.out.println("Produto não encontrado.");
+        }
     }
 
     /**
