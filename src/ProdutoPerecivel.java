@@ -32,11 +32,11 @@ public class ProdutoPerecivel extends Produto{
         return getPrecoCusto() * (1 + getMargemLucro());
     }
  
-    @Override
-    public String toString(){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        return super.toString() + " | Validade: " + dataDeValidade.format(formatter);
-    }
+        @Override
+        public String toString(){
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return String.format("%s (Perecível) - Preço: R$ %.2f - Validade: %s", getDescricao(), valorDeVenda(), dataDeValidade.format(formatter));
+        }
 
     @Override
     public String gerarDadosTexto() {
