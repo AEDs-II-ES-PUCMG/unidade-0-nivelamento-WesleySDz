@@ -1,12 +1,12 @@
 public class ProdutoNaoPerecivel extends Produto {
 
 
-    public ProdutoNaoPerecivel(String descricao, double precoCusto, double margemLucro) {
-        super(descricao, precoCusto, margemLucro);
+    public ProdutoNaoPerecivel(String descricao, double precoCusto, double margemLucro, int quantidadeEmEstoque) {
+        super(descricao, precoCusto, margemLucro, quantidadeEmEstoque);
     }
 
-    public ProdutoNaoPerecivel(String descricao, double precoCusto) {
-        super(descricao, precoCusto);
+    public ProdutoNaoPerecivel(String descricao, double precoCusto, int quantidadeEmEstoque) {
+        super(descricao, precoCusto, quantidadeEmEstoque);
     }
 
     // Não entendi a lógica de implementação desse override

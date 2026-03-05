@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class Comercio {
 
-    /**
+    /** 
      * Para inclusão de novos produtos no vetor
      */
     static final int MAX_NOVOS_PRODUTOS = 10;
@@ -70,7 +70,7 @@ public class Comercio {
 
     /**
      * Lê os dados de um arquivo texto e retorna um vetor de produtos. Arquivo
-     * no formato N (quantiade de produtos) <br/>
+     * no formato N (quantidade de produtos) <br/>
      * tipo; descrição;preçoDeCusto;margemDeLucro;[dataDeValidade] <br/>
      * Deve haver uma linha para cada um dos produtos. Retorna um vetor vazio em
      * caso de problemas com o arquivo.
@@ -81,6 +81,7 @@ public class Comercio {
      */
     static Produto[] lerProdutos(String nomeArquivoDados) {
         File arquivoDados = new File(nomeArquivoDados);
+
 
         // Configura um vetor padrão vazio para retornos de erro/arquivo novo
         Produto[] vetorVazio = new Produto[MAX_NOVOS_PRODUTOS];
@@ -194,15 +195,18 @@ public class Comercio {
         System.out.print("O produto é perecível? (s/n): ");
         String respostaPerecivel = teclado.nextLine().trim().toLowerCase();
 
+        System.out.print("Digite a quantidade: ");
+        int quantidadeEmEsqtoque = Integer.parseInt(teclado.nextLine().trim());
+
         Produto novoProduto;
         if (respostaPerecivel.equals("s")) {
             System.out.print("Digite a data de validade do produto (dd/MM/yyyy): ");
             String dataValidadeStr = teclado.nextLine().trim();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate dataValidade = LocalDate.parse(dataValidadeStr, formatter);
-            novoProduto = new ProdutoPerecivel(descricao, precoCusto, margemLucro, dataValidade);
+            novoProduto = new ProdutoPerecivel(descricao, precoCusto, margemLucro, dataValidade, quantidadeEmEsqtoque);
         } else {
-            novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro);
+            novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro, quantidadeEmEsqtoque);
         }
 
         if (quantosProdutos < produtosCadastrados.length) {
@@ -247,6 +251,18 @@ public class Comercio {
 
     }
 
+    public void realizarPedido(){
+        System.out.print("Digite o id do produto a ser adicionado: ");
+        int idSolicitado = Integer.parseInt(teclado.nextLine());
+        Produto solicitacao = produtosCadastrados[idSolicitado];
+        
+        
+    }
+        // Verificar se o produto já está presente no carrinho
+        
+
+
+
     public static void main(String[] args) throws Exception {
         teclado = new Scanner(System.in, Charset.forName("ISO-8859-2"));
         nomeArquivoDados = "dadosProdutos.csv";
@@ -261,6 +277,10 @@ public class Comercio {
                     localizarProdutos();
                 case 3 ->
                     cadastrarProduto();
+                // case 4 ->
+                //     visualizarCarrinho();
+                // case 5 ->
+                //     realizarPedido();
             }
             pausa();
         } while (opcao != 0);

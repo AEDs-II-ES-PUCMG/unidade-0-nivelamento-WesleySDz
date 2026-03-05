@@ -7,6 +7,7 @@ public abstract class Produto {
 	private String descricao;
 	private double precoCusto;
 	private double margemLucro;
+	private int quantidadeEmEstoque;
 
 	public String getDescricao() {
 		return descricao;
@@ -20,6 +21,14 @@ public abstract class Produto {
 		return margemLucro;
 	}
 
+	public int getQuantidadeEmEstoque(){
+		return quantidadeEmEstoque;
+	}
+
+	public void setQuantidadeEmEstoque(int quantidadeEmEstoque){
+		this.quantidadeEmEstoque = quantidadeEmEstoque;
+	}
+
 	/**
 	 * Inicializador privado. Os valores default, em caso de erro, são:
 	 * "Produto sem descrição", R$ 0.00, 0.0
@@ -28,12 +37,13 @@ public abstract class Produto {
 	 * @param precoCusto  Preço do produto (mínimo 0.01)
 	 * @param margemLucro Margem de lucro (mínimo 0.01)
 	 */
-	private void init(String desc, double precoCusto, double margemLucro) {
+	private void init(String desc, double precoCusto, double margemLucro, int quantidadeEmEstoque) {
 
-		if ((desc.length() >= 3) && (precoCusto > 0.0) && (margemLucro > 0.0)) {
+		if ((desc.length() >= 3) && (precoCusto > 0.0) && (margemLucro > 0.0) && (quantidadeEmEstoque > 0)) {
 			descricao = desc;
 			this.precoCusto = precoCusto;
 			this.margemLucro = margemLucro;
+			this.quantidadeEmEstoque = quantidadeEmEstoque;
 		} else {
 			throw new IllegalArgumentException("Valores inválidos para os dados do produto.");
 		}
@@ -47,8 +57,8 @@ public abstract class Produto {
 	 * @param precoCusto  Preço do produto (mínimo 0.01)
 	 * @param margemLucro Margem de lucro (mínimo 0.01)
 	 */
-	public Produto(String desc, double precoCusto, double margemLucro) {
-		init(desc, precoCusto, margemLucro);
+	public Produto(String desc, double precoCusto, double margemLucro, int quantidadeEmEstoque) {
+		init(desc, precoCusto, margemLucro, quantidadeEmEstoque);
 	}
 
 	/**
@@ -60,8 +70,8 @@ public abstract class Produto {
 	 * @param desc       Descrição do produto (mínimo de 3 caracteres)
 	 * @param precoCusto Preço do produto (mínimo 0.01)
 	 */
-	public Produto(String desc, double precoCusto) {
-		init(desc, precoCusto, MARGEM_PADRAO);
+	public Produto(String desc, double precoCusto, int quantidadeEmEstoque) {
+		init(desc, precoCusto, MARGEM_PADRAO, quantidadeEmEstoque);
 	}
 
 	/**
@@ -85,8 +95,15 @@ public abstract class Produto {
 
 		NumberFormat moeda = NumberFormat.getCurrencyInstance();
 
-		return String.format("NOME: " + descricao + ": " + moeda.format(valorDeVenda()));
+		return String.format(descricao + " - " + moeda.format(valorDeVenda()) + " - Estoque: " + quantidadeEmEstoque);
 	}
+
+	public void reduzirEstoque(int quantidade){
+		if (quantidade <= quantidadeEmEstoque){
+			quantidadeEmEstoque -= quantidade;
+		}
+	}
+
 
 	/**
 	 * Igualdade de produtos: caso possuam o mesmo nome/descrição.
@@ -128,12 +145,14 @@ public abstract class Produto {
 		String descricao = dados[1].trim();
 		double precoCusto = Double.parseDouble(dados[2].trim());
 		double margemLucro = Double.parseDouble(dados[3].trim());
+		int quantidadeEmEstoque = Integer.parseInt(dados[dados.length - 1].trim());
 		switch (tipo) {
-			case 1 -> novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro);
+			
+			case 1 -> novoProduto = new ProdutoNaoPerecivel(descricao, precoCusto, margemLucro, quantidadeEmEstoque);
 			case 2 -> {
 				String dataValidade = dados[4].trim();
 				novoProduto = new ProdutoPerecivel(descricao, precoCusto, margemLucro,
-						java.time.LocalDate.parse(dataValidade, formatter));
+						java.time.LocalDate.parse(dataValidade, formatter), quantidadeEmEstoque);
 			}
 			default -> throw new IllegalArgumentException("Tipo de produto inválido: " + tipo); // Lança uma exceção
 																								// para tipos inválidos

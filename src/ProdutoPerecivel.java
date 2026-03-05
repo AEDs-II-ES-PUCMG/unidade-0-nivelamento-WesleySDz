@@ -6,8 +6,9 @@ public class ProdutoPerecivel extends Produto{
     private static final int PRAZO_DESCONTO = 7; // 7 Dias
     private final LocalDate dataDeValidade;
 
-    public ProdutoPerecivel(String descricao, double precoCusto, double margemLucro, LocalDate dataDeValidade) {
-        super(descricao, precoCusto, margemLucro);
+    public ProdutoPerecivel(String descricao, double precoCusto, double margemLucro, LocalDate dataDeValidade, int quantidadeEmEstoque) {
+
+        super(descricao, precoCusto, margemLucro, quantidadeEmEstoque);
 
         // Verificação se a data de validade é posterior a data atual
         if (dataDeValidade.isBefore(LocalDate.now())) {
@@ -16,6 +17,18 @@ public class ProdutoPerecivel extends Produto{
         
         this.dataDeValidade = dataDeValidade;
     }
+
+    // public ProdutoPerecivel(String descricao, double precoCusto, LocalDate dataDeValidade, int quantidadeEmEstoque) {
+        
+    //     super(descricao, precoCusto, quantidadeEmEstoque);
+
+    //     // Verificação se a data de validade é posterior a data atual
+    //     if (dataDeValidade.isBefore(LocalDate.now())) {
+    //         throw new IllegalArgumentException("A data de validade deve ser posterior a data atual");
+    //     }
+        
+    //     this.dataDeValidade = dataDeValidade;
+    // }
 
     @Override
     public double valorDeVenda(){
@@ -35,7 +48,7 @@ public class ProdutoPerecivel extends Produto{
         @Override
         public String toString(){
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-            return String.format("%s (Perecível) - Preço: R$ %.2f - Validade: %s", getDescricao(), valorDeVenda(), dataDeValidade.format(formatter));
+            return String.format("%s (Perecível) - Preço: R$ %.2f - Validade: %s - Estoque: %d", getDescricao(), valorDeVenda(), dataDeValidade.format(formatter), getQuantidadeEmEstoque());
         }
 
     @Override
